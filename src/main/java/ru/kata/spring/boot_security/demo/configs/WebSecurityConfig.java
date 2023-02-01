@@ -3,27 +3,35 @@ package ru.kata.spring.boot_security.demo.configs;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig implements WebSecurityCustomizer {
+    
     private final SuccessUserHandler successUserHandler;
+    
+    private final DataSource dataSource;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, DataSource dataSource) {
         this.successUserHandler = successUserHandler;
+        this.dataSource = dataSource;
     }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers("/", "/index").permitAll()
+                .authorizeHttpRequests()
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/users").hasAnyAuthority("ADMIN", "USER")
+                .requestMatchers("/admin", "/userinfo").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler)
@@ -31,19 +39,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .permitAll();
+        return http.build();
     }
-
-    // аутентификация inMemory
+    
     @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("user")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user);
+    public SpringSecurityDialect securityDialect() {
+        return new SpringSecurityDialect();
     }
+    
+    @Bean
+    public UserDetailsManager userDetailsService() {
+        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+        manager
+                .setAuthoritiesByUsernameQuery("select username, role " +
+                "from users_roles " +
+                "right join roles r on r.role_id = users_roles.roles_role_id " +
+                "left join users u on u.user_id = users_roles.users_user_id " +
+                "where username=?;");
+        return manager;
+    }
+    
+    @Override
+    public void customize(WebSecurity web) {
+    
+    }
+    
 }

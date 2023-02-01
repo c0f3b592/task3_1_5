@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Users </title>
+</head>
+<body>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th> username</th>
+            <th> password</th>
+            <th> roles</th>
+            <th> actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td><span th:text="${user.username}"> username </span></td>
+            <td><span th:text="${user.password}"> password </span></td>
+            <td><span th:each="role : ${user.roles}" th:text="${role.role} + ' '"> roles </span></td>
+            <form action="#" th:action="@{/admin/{id}(id=${user.id})}" th:method="get">
+                <td>
+                    <button type="submit" th:name="action" th:value="getinfo"> info</button>
+                </td>
+            </form>
+            <form action="#" th:action="@{/admin/{id}(id=${user.id})}" th:method="delete">
+                <td>
+                    <button th:type="submit"> delete</button>
+                </td>
+            </form>
+        </tr>
+        </tbody>
+    </table>
+
+    <form action="#" th:action="@{/userinfo}" th:method="get">
+        <td>
+            <button th:type="submit" th:name="newuser" th:value="${true}"> add</button>
+        </td>
+    </form>
+</div>
+<div>
+    <br>
+    <br>
+    <br>
+    <form th:action="@{/logout}">
+        <button type="submit"> logout</button>
+    </form>
+</div>
+</body>
+</html>
+
