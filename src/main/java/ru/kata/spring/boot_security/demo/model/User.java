@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -26,12 +26,12 @@ public class User implements UserDetails {
     private boolean enabled;
     
     @Column(name = "roles")
-    @ManyToMany(cascade = CascadeType.MERGE)
-    private List<Role> roles;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<Role> roles;
     
     public User() {}
     
-    public User(String username, String password, boolean enabled, List<Role> roles) {
+    public User(String username, String password, boolean enabled, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
@@ -69,10 +69,10 @@ public class User implements UserDetails {
         this.enabled = enabled;
     }
     
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
     

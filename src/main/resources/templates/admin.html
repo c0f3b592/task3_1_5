@@ -12,6 +12,7 @@
         <tr>
             <th> username</th>
             <th> password</th>
+            <th> enabled</th>
             <th> roles</th>
             <th> actions</th>
         </tr>
@@ -20,6 +21,7 @@
         <tr th:each="user : ${users}">
             <td><span th:text="${user.username}"> username </span></td>
             <td><span th:text="${user.password}"> password </span></td>
+            <td><span th:text="${user.enabled}"> enabled </span></td>
             <td><span th:each="role : ${user.roles}" th:text="${role.role} + ' '"> roles </span></td>
             <form action="#" th:action="@{/admin/{id}(id=${user.id})}" th:method="get">
                 <td>
@@ -45,6 +47,7 @@
     <br>
     <br>
     <br>
+    <a href="/"> index </a>
     <form th:action="@{/logout}">
         <button type="submit"> logout</button>
     </form>

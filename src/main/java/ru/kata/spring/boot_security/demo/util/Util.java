@@ -4,13 +4,13 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.exception.IllegalUserFieldsException;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class Util {
@@ -18,7 +18,7 @@ public class Util {
     private final UserService service;
     
     private final RoleService roleService;
-
+    
     @Autowired
     public Util(UserService service, RoleService roleService) {
         this.service = service;
@@ -26,27 +26,28 @@ public class Util {
     }
 
     @PostConstruct
-    @Transactional
     public void fillTable() {
         roleService.saveRole(new Role("ADMIN"));
         roleService.saveRole(new Role("USER"));
+
+        Set<Role> set1 = roleService.getAllRoles();
+        Set<Role> set2 = new HashSet<>();
+        set2.add(roleService.getUserRole());
+
+        String password = "user";
         
-        List<Role> list1 = new ArrayList<>();
-        list1.add(roleService.getRoleByName("ADMIN"));
-        list1.add(roleService.getRoleByName("USER"));
+        try {
+            service.addUser(new User("user1", password, true, set1));
+            service.addUser(new User("user2", password, true, set2));
+            service.addUser(new User("user3", password, true, set2));
+            service.addUser(new User("user4", password, true, set1));
+            service.addUser(new User("user5", password, true, set2));
+        } catch (IllegalUserFieldsException ignored) {}
         
-        List<Role> list2 = new ArrayList<>();
-        list2.add(roleService.getRoleByName("USER"));
         
-        service.addUser(new User("user1", "{noop}user", true, list1));
-        service.addUser(new User("user2", "{noop}user", true, list2));
-        service.addUser(new User("user3", "{noop}user", true, list2));
-        service.addUser(new User("user4", "{noop}user", true, list1));
-        service.addUser(new User("user5", "{noop}user", true, list2));
     }
 
     @PreDestroy
-    @Transactional
     public void cleanTable() {
         service.cleanUser();
         roleService.cleanRoles();

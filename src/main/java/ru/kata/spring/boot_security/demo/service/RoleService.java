@@ -1,14 +1,20 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import ru.kata.spring.boot_security.demo.model.Role;
+import java.util.Optional;
+import java.util.Set;
 
 public interface RoleService {
     
-    Role getRoleById(Long id);
+    Optional<Role> getRoleById(Long id);
     
     void saveRole(Role role);
     
     void cleanRoles();
     
-    Role getRoleByName(String role);
+    Set<Role> getAllRoles();
+    
+    Role getUserRole();
+    
+    Role getAdminRole();
 }
