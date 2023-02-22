@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +27,15 @@ public class AdminController {
     }
     
     @GetMapping(value = "/admin")
-    public String printUsers(ModelMap model) {
-        List<User> users = service.getUserList();
-        model.addAttribute("users", users);
-        return "admin";
+    public String printUsers(ModelMap model, Authentication auth) {
+        Optional<User> optionalUser = service.getUserByName(auth.getName());
+        if (optionalUser.isPresent()) {
+            List<User> users = service.getUserList();
+            model.addAttribute("users", users);
+            model.addAttribute("user", optionalUser.get());
+            return "admin";
+        }
+        return "index";
     }
     
     @GetMapping(value = "/userinfo", params = {"newuser"})

@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -75,7 +76,10 @@ public class User implements UserDetails {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-    
+
+    public String getRolesString() {
+        return getRoles().stream().map(Role::getRole).collect(Collectors.joining(" "));
+    }
     @Override
     public String toString() {
         return "User{" +
