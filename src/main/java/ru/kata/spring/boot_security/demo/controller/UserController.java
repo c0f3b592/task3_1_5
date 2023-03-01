@@ -20,11 +20,8 @@ public class UserController {
     @GetMapping(value = "/user")
     public String printUser(ModelMap model, Authentication auth) {
         Optional<User> optionalUser = service.getUserByName(auth.getName());
-        if (optionalUser.isPresent()) {
-            model.addAttribute("user", optionalUser.get());
-            return "user";
-        }
-        return "index";
+        model.addAttribute("user", optionalUser.orElseThrow());
+        return "user";
     }
 
 }

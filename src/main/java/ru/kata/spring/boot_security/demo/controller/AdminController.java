@@ -29,18 +29,15 @@ public class AdminController {
     @GetMapping(value = "/admin")
     public String printUsers(ModelMap model, Authentication auth) {
         Optional<User> optionalUser = service.getUserByName(auth.getName());
-        if (optionalUser.isPresent()) {
-            List<User> users = service.getUserList();
-            User newUser = new User();
-            Set<Role> roles = roleService.getAllRoles();
-            newUser.setRoles(roles);
-            model.addAttribute("users", users);
-            model.addAttribute("headuser", optionalUser.get());
-            model.addAttribute("newuser", newUser);
-            model.addAttribute("selectableRoles", roles);
-            return "admin";
-        }
-        return "index";
+        List<User> users = service.getUserList();
+        User newUser = new User();
+        Set<Role> roles = roleService.getAllRoles();
+        newUser.setRoles(roles);
+        model.addAttribute("users", users);
+        model.addAttribute("headuser", optionalUser.orElseThrow());
+        model.addAttribute("newuser", newUser);
+        model.addAttribute("selectableRoles", roles);
+        return "admin";
     }
 
     @PostMapping(value = "/admin")
