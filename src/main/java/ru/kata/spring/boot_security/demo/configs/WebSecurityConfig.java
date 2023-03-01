@@ -37,7 +37,7 @@ public class WebSecurityConfig implements WebSecurityCustomizer {
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/reg").anonymous()
                 .requestMatchers("/users").hasAnyAuthority("ADMIN", "USER")
-                .requestMatchers("/admin", "/userinfo").hasAuthority("ADMIN")
+                .requestMatchers("/admin").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler)

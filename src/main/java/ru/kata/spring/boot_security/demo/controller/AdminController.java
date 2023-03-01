@@ -31,51 +31,32 @@ public class AdminController {
         Optional<User> optionalUser = service.getUserByName(auth.getName());
         if (optionalUser.isPresent()) {
             List<User> users = service.getUserList();
+            User newUser = new User();
+            Set<Role> roles = roleService.getAllRoles();
+            newUser.setRoles(roles);
             model.addAttribute("users", users);
-            model.addAttribute("user", optionalUser.get());
+            model.addAttribute("headuser", optionalUser.get());
+            model.addAttribute("newuser", newUser);
+            model.addAttribute("selectableRoles", roles);
             return "admin";
         }
         return "index";
     }
-    
-    @GetMapping(value = "/userinfo", params = {"newuser"})
-    public String addUser(ModelMap model) {
-        User user = new User();
-        Set<Role> roles = roleService.getAllRoles();
-        user.setRoles(roles);
-        model.addAttribute("user", user);
-        model.addAttribute("selectableRoles", roles);
-        model.addAttribute("action", "new");
-        return "userinfo";
-    }
-    
-    @PostMapping(value = "/userinfo")
+
+    @PostMapping(value = "/admin")
     public String saveUser(@ModelAttribute("user") User user) {
         try {
             service.addUser(user);
         } catch (IllegalUserFieldsException ignored) {}
         return "redirect:/admin";
     }
-    
-    @GetMapping(value = "/admin/{id}")
-    public String updateUser(ModelMap model, @PathVariable Long id) {
-        Optional<User> userOptional = service.getUserById(id);
-        if (userOptional.isPresent()) {
-            Set<Role> roles = roleService.getAllRoles();
-            model.addAttribute("user", userOptional.get());
-            model.addAttribute("selectableRoles", roles);
-            model.addAttribute("action", "update");
-            return "userinfo";
-        }
-        return "redirect:/admin";
-    }
-    
-    @PatchMapping(value = "/userinfo", params = {"update"})
-    public String updateUser(@ModelAttribute User user) {
+
+    @PatchMapping(value = "/admin{id}{username}")
+    public String updateUser(@ModelAttribute("newuser") User user) {
         try {
             service.updateUser(user);
         } catch (IllegalUserFieldsException ignored) {}
-        
+
         return "redirect:/admin";
     }
     

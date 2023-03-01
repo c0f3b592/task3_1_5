@@ -55,14 +55,17 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional
     public void updateUser(User user) throws IllegalUserFieldsException {
-        if (    user.getUsername().isBlank() ||
+        if (    user.getUsername().isBlank()    ||
                 user.getPassword().isBlank()) {
             throw new IllegalUserFieldsException("invalid user fields");
+        } else if ( getUserByName(user.getUsername()).isPresent() &&
+                    !getUserByName(user.getUsername()).get().getId().equals(user.getId())) {
+                throw new IllegalUserFieldsException("username is occupied");
         } else if ((user.getPassword())
-                .equals(repository.
-                        findById(user.getId())
-                            .orElseThrow()
-                            .getPassword())) {
+                .equals(repository
+                        .findById(user.getId())
+                        .orElseThrow()
+                        .getPassword())) {
             repository.save(user);
         } else {
             user.setPassword(encoder.encode(user.getPassword()));

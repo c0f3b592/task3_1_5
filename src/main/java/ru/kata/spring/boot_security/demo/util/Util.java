@@ -41,7 +41,7 @@ public class Util {
             service.addUser(new User("user2", password, true, set2));
             service.addUser(new User("user3", password, true, set2));
             service.addUser(new User("user4", password, true, set1));
-            service.addUser(new User("user5", password, true, set2));
+            service.addUser(new User("user5", password, false, set2));
         } catch (IllegalUserFieldsException ignored) {}
         
         

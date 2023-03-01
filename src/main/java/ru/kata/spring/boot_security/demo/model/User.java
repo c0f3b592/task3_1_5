@@ -77,6 +77,14 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public boolean hasRoleByRoleName(String name) {
+        for (Role role : roles) {
+            if (role.getRole().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
     public String getRolesString() {
         return getRoles().stream().map(Role::getRole).collect(Collectors.joining(" "));
     }

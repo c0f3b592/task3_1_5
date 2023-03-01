@@ -20,8 +20,7 @@ public class AnonController {
     private final UserService service;
     
     private final RoleService roleService;
-    
-    
+
     public AnonController(UserService service, RoleService roleService) {
         this.service = service;
         this.roleService = roleService;
