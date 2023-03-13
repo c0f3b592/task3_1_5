@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,18 +16,23 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
+    @JsonProperty("id")
     private Long id;
     
     @Column(name = "username")
+    @JsonProperty("username")
     private String username;
     
     @Column(name = "password")
+    @JsonProperty("password")
     private String password;
     
     @Column(name = "enabled")
+    @JsonProperty("enabled")
     private boolean enabled;
     
     @Column(name = "roles")
+    @JsonProperty("roles")
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
     

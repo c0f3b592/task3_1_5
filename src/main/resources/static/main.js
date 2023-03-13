@@ -1,0 +1,4 @@
+setNavBarContent()
+updateUsersTable();
+setAddListener();
+setModalListener();

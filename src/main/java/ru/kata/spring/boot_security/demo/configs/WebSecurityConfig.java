@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.configs;
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,10 +35,11 @@ public class WebSecurityConfig implements WebSecurityCustomizer {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/reg").anonymous()
-                .requestMatchers("/users").hasAnyAuthority("ADMIN", "USER")
+                .requestMatchers("/user").hasAnyAuthority("ADMIN", "USER")
                 .requestMatchers("/admin").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
@@ -79,5 +82,14 @@ public class WebSecurityConfig implements WebSecurityCustomizer {
     
     @Override
     public void customize(WebSecurity web) {}
-    
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(MapperFeature.AUTO_DETECT_CREATORS,
+                MapperFeature.AUTO_DETECT_FIELDS,
+                MapperFeature.AUTO_DETECT_GETTERS,
+                MapperFeature.AUTO_DETECT_IS_GETTERS);
+        return mapper;
+    }
 }
