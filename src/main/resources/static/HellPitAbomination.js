@@ -1,5 +1,5 @@
 async function getUsersJson() {
-    let response = await fetch('http://localhost:8077/getUsers');
+    let response = await fetch('http://localhost:8077/admin/getUsers');
     if (response.ok) {
         return await response.json();
     } else {
@@ -8,7 +8,7 @@ async function getUsersJson() {
 }
 
 async function getUserByIDJson(id) {
-    let response = await fetch('http://localhost:8077/getUserByID/' + id);
+    let response = await fetch('http://localhost:8077/admin/getUserByID/' + id);
     if (response.ok) {
         return await response.json();
     } else {
@@ -17,7 +17,7 @@ async function getUserByIDJson(id) {
 }
 
 async function getAllRolesJson() {
-    let response = await fetch('http://localhost:8077/getRoles');
+    let response = await fetch('http://localhost:8077/admin/getRoles');
     if (response.ok) {
         return await response.json();
     } else {
@@ -27,7 +27,7 @@ async function getAllRolesJson() {
 
 async function setNavBarContent() {
     let nabBar = document.getElementById('navbar-content');
-    fetch('http://localhost:8077/getAuthUser')
+    fetch('http://localhost:8077/user/getAuthUser')
         .then(response => response.json())
         .then(json => {
             let username = json['username'];

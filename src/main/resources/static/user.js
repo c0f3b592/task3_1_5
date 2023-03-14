@@ -1,5 +1,5 @@
 async function getAuthUserJson() {
-    let response = await fetch('http://localhost:8077/getAuthUser');
+    let response = await fetch('http://localhost:8077/user/getAuthUser');
     if (response.ok) {
         return await response.json();
     } else {
