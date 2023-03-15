@@ -37,19 +37,15 @@ public class WebSecurityConfig implements WebSecurityCustomizer {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/reg").anonymous()
-                .requestMatchers("/user").hasAnyAuthority("ADMIN", "USER")
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                .requestMatchers("/user/**").hasAnyAuthority("ADMIN", "USER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler)
                 .permitAll()
                 .and()
                 .logout()
-                .permitAll()
-                .and()
-                .anonymous().authorities("ANON");
+                .permitAll();
         return http.build();
     }
     

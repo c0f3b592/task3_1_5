@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -131,7 +130,8 @@
 
                             <h6 class="text-center pt-3"><strong>roles</strong></h6>
                             <select class="form-select" size="2" multiple>
-                                <option th:id="'new-user-' + ${role.role}" th:each="role : ${selectableRoles}" th:text="${role.role}"></option>
+                                <option id="new-user-ADMIN">ADMIN</option>
+                                <option id="new-user-USER">USER</option>
                             </select>
                             <div class="py-3 d-flex justify-content-center">
                                 <button id="submit-new-user" type="submit" class="btn btn-success">add new user</button>

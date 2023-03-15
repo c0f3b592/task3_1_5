@@ -1,6 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.security.core.Authentication;
+
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.exception.IllegalUserFieldsException;
 import ru.kata.spring.boot_security.demo.model.Role;
@@ -8,17 +8,16 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @RestController
-public class RestControllers {
+public class RestAdminController {
 
     private UserService service;
 
     private RoleService roleService;
 
-    public RestControllers(UserService service, RoleService roleService) {
+    public RestAdminController(UserService service, RoleService roleService) {
         this.service = service;
         this.roleService = roleService;
     }
@@ -58,9 +57,4 @@ public class RestControllers {
         } catch (IllegalUserFieldsException ignored) {}
     }
 
-    @GetMapping(value = "user/getAuthUser")
-    public User authUser(Authentication auth) {
-        Optional<User> optionalUser = service.getUserByName(auth.getName());
-        return optionalUser.orElseThrow();
-    }
 }
